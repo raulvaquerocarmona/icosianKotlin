@@ -5,6 +5,8 @@ import android.os.Bundle
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 class MapaActivity : AppCompatActivity(), OnMapReadyCallback{
 
@@ -22,6 +24,14 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        createMarker()
         map = googleMap
+        createMarker()
+    }
+
+    private fun createMarker() {
+        val coordinates = LatLng(41.49247797006594, 2.0345114115255423)
+        val marker = MarkerOptions().position(coordinates).title("ALMACEN 1")
+        map.addMarker(marker)
     }
 }
