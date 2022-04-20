@@ -5,14 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMainBinding
 
+
+private val db = FirebaseFirestore.getInstance()
 lateinit var binding : ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main)
         setContentView(binding.root)
         setup()
     }
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     binding.editTextTextPassword.text.toString()
                 ).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        //showHome(it.result?.user?.email ?: "", ProviderType.BASIC)
+                        showHome(it.result?.user?.email ?: "", ProviderType.BASIC)
                     } else {
                         showAlert()
                     }
@@ -68,11 +70,11 @@ class MainActivity : AppCompatActivity() {
 
 
     //l'autenticació funciona correctament
-    /*private fun showHome(email: String, provider: ProviderType){
-        val homeIntent = Intent(this, activity_mapa::class.java).apply{
+    private fun showHome(email: String, provider: ProviderType){
+        val homeIntent = Intent(this, pantalla_admin::class.java).apply{
             putExtra("email", email)
             putExtra("provider", provider.name)
         }
         startActivity(homeIntent)
-    }*/
+    }
 }
