@@ -10,6 +10,11 @@ import es.vaquero.raul.icosiankotlin.databinding.ActivityMainBinding
 
 
 private val db = FirebaseFirestore.getInstance()
+// Create a reference to the cities collection
+//private val citiesRef = db.collection("users")
+
+// Create a query against the collection.
+//private val query = citiesRef.whereEqualTo("rango", "1");
 lateinit var binding : ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         }
         //clic al botó Accedir
         binding.button2.setOnClickListener {
-            if (binding.editTextTextEmailAddress.text.isNotEmpty() && binding.editTextTextPassword.text.isNotEmpty()) {
+            if (binding.editTextTextEmailAddress.text.isNotEmpty() && binding.editTextTextPassword.text.isNotEmpty() /*&& query.equals(0)*/) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(
                     binding.editTextTextEmailAddress.text.toString(),
                     binding.editTextTextPassword.text.toString()
@@ -55,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
         }
     }
 
