@@ -14,15 +14,22 @@ class pantallaSeleccion : AppCompatActivity() {
         binding2 = ActivitySeleccionBinding.inflate(layoutInflater)
         setContentView(binding2.root)
 
-        binding2.button3.setOnClickListener(){
+        binding2.buttonJefe.setOnClickListener(){
+            cambiaJefe()
+        }
+
+        binding2.buttonEmp.setOnClickListener(){
             cambiaMapa()
-            print("He sido ejecutado!!!")
         }
     }
 
     fun cambiaMapa(){
         val intent = Intent(this, MapaActivity::class.java)
         startActivity(intent)
-        print("He funcionado!!")
+    }
+
+    fun cambiaJefe(){
+        val intent = Intent(this, JefeActivity::class.java)
+        startActivity(intent)
     }
 }
