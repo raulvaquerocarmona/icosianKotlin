@@ -1,32 +1,34 @@
 package es.vaquero.raul.icosiankotlin
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import es.vaquero.raul.icosiankotlin.databinding.ActivityMapaBinding
 import com.google.android.gms.maps.model.MarkerOptions
 
 
-//lateinit var binding2: ActivityMapaBinding
 class MapaActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var map:GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
         setContentView(R.layout.activity_mapa)
-        createFragment()
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment!!.getMapAsync { googleMap ->
+            map = googleMap
+        }
     }
 
+    /*
     private fun createFragment() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
+    */
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         createMarker()

@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     //l'autenticació funciona correctament
     private fun showHome(email: String, provider: ProviderType){
-        val homeIntent = Intent(this, pantalla_admin::class.java).apply{
+        val homeIntent = Intent(this, pantallaSeleccion::class.java).apply{
             putExtra("email", email)
             putExtra("provider", provider.name)
         }

@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IcosianKotlin">
         <activity
-            android:name=".pantalla_admin"
+            android:name=".MapaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pantallaSeleccion"
             android:exported="false" />
 
         <meta-data
