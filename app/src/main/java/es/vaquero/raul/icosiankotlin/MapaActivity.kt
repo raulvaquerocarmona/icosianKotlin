@@ -1,6 +1,7 @@
 package es.vaquero.raul.icosiankotlin
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,7 +21,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback{
         setContentView(R.layout.activity_mapa)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
