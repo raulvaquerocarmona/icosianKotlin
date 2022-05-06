@@ -23,4 +23,15 @@
         android:text="Button"
         tools:layout_editor_absoluteX="250dp"
         tools:layout_editor_absoluteY="118dp" />
+    <Button
+        android:id="@+id/btn_crear_marcador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear marcadores"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.167"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'kotlin-android'
+    //id 'kotlin-android-extensions'
 }
 
 android {
@@ -46,6 +47,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.2.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth:21.0.2'
+    implementation 'com.google.android.libraries.places:places:2.6.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.1.1'
     implementation 'com.google.firebase:firebase-firestore:24.0.2'
     testImplementation 'junit:junit:4.13.2'
