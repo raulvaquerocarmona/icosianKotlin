@@ -2,6 +2,8 @@
     <string name="app_name">icosianKotlin</string>
     <string name="android_sdk_places_api_key">AIzaSyDN_mUEzByNKUA9gcRgFrLDnv3qQNZutyE</string>
     <string name="btn_change">Modificar</string>
+    <string name="btn_ori">Origen</string>
+    <string name="btn_dest">Destino</string>
     <string name="label_to">Dirección destino:</string>
-    <string name="label_from">Dirección origen: %s</string>
+    <string name="label_from">Dirección origen: %</string>
 </resources>

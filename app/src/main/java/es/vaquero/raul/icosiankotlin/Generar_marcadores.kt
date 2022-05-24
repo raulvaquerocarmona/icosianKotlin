@@ -1,5 +1,6 @@
 package es.vaquero.raul.icosiankotlin
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +31,7 @@ class Generar_marcadores : AppCompatActivity() {
         private lateinit var mFromLatLng: LatLng
         private var corde: Double = 0.0
         private var corde2: Double = 0.0
+        private var nombre: String = ""
         private val db = FirebaseFirestore.getInstance()
         private val bdd = FirebaseDatabase.getInstance().getReference()
         lateinit var geoPoint: GeoPoint
@@ -84,6 +86,7 @@ class Generar_marcadores : AppCompatActivity() {
     }
 
 
+    @SuppressLint("StringFormatInvalid")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_AUTOCOMPLETE_FROM) {
             when (resultCode) {
@@ -98,6 +101,8 @@ class Generar_marcadores : AppCompatActivity() {
                         binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
+                        nombre = place.name
+
                         Log.i(TAG, "LatLngitud:" + corde)
                         Log.i(TAG, "LatLngitud:" + corde2)
                         var hashMap : HashMap<String, Double>
@@ -105,10 +110,15 @@ class Generar_marcadores : AppCompatActivity() {
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
 
-                        bdd.child("Puntos").push().setValue(hashMap)
+                       // bdd.child("Puntos").child(nombre).push().setValue(hashMap)
+                        db.collection("Puntos").document(nombre).set(hashMap)
+                        /*FirebaseDatabase.getInstance("https://database-b98c9-default-rtdb.firebaseio.com").reference.child("Ciudades")
+                            .child(nombre).push().setValue(hashMap);*/
+
                         place.latLng?.let {
                              //mFromLatLng = it
                         }
+                        //drawRoute(onActivityResult.steps)
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,

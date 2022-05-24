@@ -17,13 +17,14 @@ private val db = FirebaseFirestore.getInstance()
 //private val query = citiesRef.whereEqualTo("rango", "1");
 lateinit var binding : ActivityMainBinding
 class MainActivity : AppCompatActivity() {
+
+    private var email : String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setup()
     }
-
 
     enum class ProviderType{
         BASIC
@@ -40,11 +41,14 @@ class MainActivity : AppCompatActivity() {
                 ).addOnCompleteListener {
                     if (it.isSuccessful) {
                         //showHome(it.result?.user?.email ?: "", ProviderType.BASIC)
+                       /* email = binding.editTextTextEmailAddress.toString()
+                        db.collection("Autenticacion").document(email).set(0)*/
                     } else {
                         showAlert()
                     }
                 }
             }
+
         }
         //clic al botó Accedir
         binding.button2.setOnClickListener {
