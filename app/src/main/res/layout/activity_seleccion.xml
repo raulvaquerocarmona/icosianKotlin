@@ -12,11 +12,14 @@
         android:id="@+id/btnCargar"
         android:layout_width="280dp"
         android:layout_height="58dp"
-        android:layout_marginTop="364dp"
         android:background="@drawable/btn_bg"
         android:text="Cargar ruta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="65dp"
+        app:layout_constraintVertical_bias="0.523"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -26,8 +29,12 @@
         android:layout_marginTop="252dp"
         android:background="@drawable/btn_bg"
         android:text="Crear Ruta"
+        app:layout_constraintBottom_toTopOf="@+id/btnCargar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="65dp" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

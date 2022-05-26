@@ -46,6 +46,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         private var corde: Double = 0.0
         private var corde2: Double = 0.0
         private var nombre: String = ""
+        private var route: String = ""
         private val db = FirebaseFirestore.getInstance()
         private val bdd = FirebaseDatabase.getInstance().getReference()
         lateinit var geoPoint: GeoPoint
@@ -268,13 +269,25 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun getDirectionURL() : String{
-        val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+        /*val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+        db.collection("Ruta"+ruta).document("waypoint"+ numWaypoint).get().addOnSuccessListener {
+            rout(it.get("Latitud") as String?)
+            route.(it.get("Longitud") as String?)
+        }*/
+
         return "https://maps.googleapis.com/maps/api/directions/json?" +
                 "&origin="+
                 "&destination="+
                 "&waypoints=optimize:true" +
                 "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
     }
+
+   /* private fun rout(s: String?) {
+
+    }
+    private fun rout2(s: String?) {
+
+    }*/
 
 
     @SuppressLint("StaticFieldLeak")
@@ -295,6 +308,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 val polyline = jsonArray.getJSONObject(i).getJSONObject("overview_polyline")
                 val ruta = polyline.getString("points")
                 path.addAll(decodePolyline(ruta))
+                db.collection("Rutas completas"+ Companion.ruta).document("Json").set(ruta)
             }
             result.add(path)
 
@@ -312,7 +326,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addPolyline(lineoption)
         }
     }
-
     fun decodePolyline(encoded: String): List<LatLng> {
         val poly = ArrayList<LatLng>()
         var index = 0

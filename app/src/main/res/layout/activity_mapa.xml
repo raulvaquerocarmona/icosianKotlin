@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo">
 
     <fragment
         android:id="@+id/map"
@@ -22,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:background="@drawable/btn_bg"
         android:layout_marginTop="36dp"
         android:text="@string/btn_ori"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="252dp"
+        android:background="@drawable/btn_bg"
         android:layout_marginTop="36dp"
         android:text="@string/btn_dest"
         app:layout_constraintStart_toStartOf="@+id/tvFrom"
@@ -58,6 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:background="@drawable/btn_bg"
         android:text="Paradas"
         app:layout_constraintBottom_toBottomOf="@+id/btnCrearRuta"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +71,7 @@
         android:id="@+id/btnCrearRuta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/btn_bg"
         android:layout_marginTop="174dp"
         android:text="Crear"
         app:layout_constraintEnd_toEndOf="@+id/btnFinal"
