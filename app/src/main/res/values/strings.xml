@@ -5,5 +5,5 @@
     <string name="btn_ori">Origen</string>
     <string name="btn_dest">Destino</string>
     <string name="label_to">Dirección destino:</string>
-    <string name="label_from">Dirección origen: %</string>
+    <string name="label_from">Dirección origen:</string>
 </resources>

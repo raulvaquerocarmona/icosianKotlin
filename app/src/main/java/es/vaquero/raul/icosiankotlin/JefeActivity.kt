@@ -13,12 +13,13 @@ class JefeActivity : AppCompatActivity() {
         setContentView(binding3.root)
 
         binding3.btnCrearMarcador.setOnClickListener(){
-            cambiaJefe()
+            //cambiaJefe()
         }
     }
-
+/*
 fun cambiaJefe(){
     val intent = Intent(this, Generar_marcadores::class.java)
     startActivity(intent)
 }
+ */
 }
