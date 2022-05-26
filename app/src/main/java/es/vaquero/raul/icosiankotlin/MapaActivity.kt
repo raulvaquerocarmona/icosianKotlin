@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.Response
@@ -63,22 +64,20 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         //setContentView(R.layout.activity_mapa)
         binding4 = ActivityMapaBinding.inflate(layoutInflater)
         setContentView(binding4.root)
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         if (!Places.isInitialized()) {
             Places.initialize(
-                getApplicationContext(),
-                getString(R.string.android_sdk_places_api_key),
-                Locale.US
+                getApplicationContext(),"AIzaSyDN_mUEzByNKUA9gcRgFrLDnv3qQNZutyE"
             );
         }
 
-        binding4.btnFinal.setOnClickListener {
+        binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
             Log.v("Tags", "Visualizar")
         }
-        binding4.btnOrigen.setOnClickListener {
+        binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
             Log.v("Tags", "Visualizar2")
         }
@@ -141,10 +140,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                             mMap.addMarker(MarkerOptions().position(destinationLocation))
                         }
 
-
-
-                        bdd.child("Puntos").child(nombre).push().setValue(hashMap)
-                        // MapaActivity.db.collection("Puntos").document(MapaActivity.nombre).set(hashMap)
+                        //db.child("Puntos").child(nombre).push().setValue(hashMap)
+                        db.collection("Puntos").document(nombre).set(hashMap)
                         /*FirebaseDatabase.getInstance("https://database-b98c9-default-rtdb.firebaseio.com").reference.child("Ciudades")
                             .child(nombre).push().setValue(hashMap);*/
 

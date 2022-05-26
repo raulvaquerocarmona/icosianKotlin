@@ -57,8 +57,20 @@
         android:id="@+id/btnWaypoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="22dp"
-        tools:layout_editor_absoluteY="179dp" />
+        android:layout_marginStart="24dp"
+        android:text="Paradas"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCrearRuta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnCrearRuta" />
+
+    <Button
+        android:id="@+id/btnCrearRuta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="174dp"
+        android:text="Crear"
+        app:layout_constraintEnd_toEndOf="@+id/btnFinal"
+        app:layout_constraintStart_toStartOf="@+id/tvTo"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
