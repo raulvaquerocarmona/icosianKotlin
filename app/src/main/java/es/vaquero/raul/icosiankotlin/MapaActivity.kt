@@ -30,7 +30,6 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
-import com.google.maps.android.PolyUtil
 import es.vaquero.raul.icosiankotlin.databinding.ActivityGenerarMarcadoresBinding
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMapaBinding
 import org.json.JSONArray
@@ -43,7 +42,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val REQUEST_CODE_AUTOCOMPLETE_FROM = 1
         private const val REQUEST_CODE_AUTOCOMPLETE_TO = 2
         private const val TAG = "MainActivity"
-        lateinit var place : Place
+        lateinit var place: Place
         private lateinit var mFromLatLng: com.google.type.LatLng
         private var corde: Double = 0.0
         private var corde2: Double = 0.0
@@ -54,6 +53,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         lateinit var location: com.google.type.LatLng
         private lateinit var mMap: GoogleMap
     }
+
     lateinit var binding4: ActivityMapaBinding
     private lateinit var map: GoogleMap
     val db = Firebase.firestore
@@ -67,16 +67,18 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
 
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(),
+            Places.initialize(
+                getApplicationContext(),
                 getString(R.string.android_sdk_places_api_key),
-                Locale.US);
+                Locale.US
+            );
         }
 
-        binding4.btnForm.setOnClickListener {
+        binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
             Log.v("Tags", "Visualizar")
         }
-        binding4.btnTo.setOnClickListener {
+        binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
             Log.v("Tags", "Visualizar2")
         }
@@ -84,7 +86,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-         val cole = LatLng(41.49109224245079, 2.0396451346114075)
+        val cole = LatLng(41.49109224245079, 2.0396451346114075)
         googleMap.addMarker(
             MarkerOptions()
                 .position(cole)
@@ -94,6 +96,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cole, 15f))
 
     }
+
     private fun startAutoCompleteForm(requestCode: Int) {
         val fields =
             listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
@@ -126,18 +129,22 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         Log.i(TAG, "LatLngitud:" + corde)
                         Log.i(TAG, "LatLngitud:" + corde2)
-                        var hashMap : HashMap<String, Double>
-                                = HashMap<String, Double> ()
+                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
 
-                        val originLocation = LatLng(corde, corde2)
-                        mMap.addMarker(MarkerOptions().position(originLocation))
-                        //val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
-                       // mMap.addMarker(MarkerOptions().position(destinationLocation))
+                        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                        mapFragment.getMapAsync(this)
 
-                        // bdd.child("Puntos").child(nombre).push().setValue(hashMap)
-                       // MapaActivity.db.collection("Puntos").document(MapaActivity.nombre).set(hashMap)
+                        mapFragment.getMapAsync{
+                            val destinationLocation = LatLng(corde, corde2)
+                            mMap.addMarker(MarkerOptions().position(destinationLocation))
+                        }
+
+
+
+                        bdd.child("Puntos").child(nombre).push().setValue(hashMap)
+                        // MapaActivity.db.collection("Puntos").document(MapaActivity.nombre).set(hashMap)
                         /*FirebaseDatabase.getInstance("https://database-b98c9-default-rtdb.firebaseio.com").reference.child("Ciudades")
                             .child(nombre).push().setValue(hashMap);*/
 
@@ -160,33 +167,5 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-       /* this.map = map
-        // Sample coordinates
-        val latLngOrigin = LatLng(10.3181466, 123.9029382) // Ayala
-        val latLngDestination = LatLng(10.311795, 123.915864) // SM City
-        this.map!!.addMarker(MarkerOptions().position(latLngOrigin).title("Ayala"))
-        this.map!!.addMarker(MarkerOptions().position(latLngDestination).title("SM City"))
-        this.map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 14.5f))
-        val path: MutableList<List<LatLng>> = ArrayList()
-        val urlDirections =
-            "https://maps.googleapis.com/maps/api/directions/json?origin=10.3181466,123.9029382&destination=10.311795,123.915864&key=AIzaSyDN_mUEzByNKUA9gcRgFrLDnv3qQNZutyE"
-        val directionsRequest = object :
-            StringRequest(Request.Method.GET, urlDirections, Response.Listener<String> { response ->
-                val jsonResponse = JSONObject(response)
-                // Get routes
-                val routes = jsonResponse.getJSONArray("routes")
-                val legs = routes.getJSONObject(0).getJSONArray("legs")
-                val steps = legs.getJSONObject(0).getJSONArray("steps")
-                for (i in 0 until steps.length()) {
-                    val points =
-                        steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    path.add(PolyUtil.decode(points))
-                }
-                for (i in 0 until path.size) {
-                    this.map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
-                }
-            }, Response.ErrorListener { _ ->
-            }) {}
-        val requestQueue = Volley.newRequestQueue(this)
-        requestQueue.add(directionsRequest)*/
-    }
+}
+

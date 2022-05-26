@@ -49,11 +49,11 @@ class Generar_marcadores : AppCompatActivity() {
                 Locale.US);
         }
 
-        binding4.btnForm.setOnClickListener {
+        binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
             Log.v("Tags", "Visualizar")
         }
-        binding4.btnTo.setOnClickListener {
+        binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
             Log.v("Tags", "Visualizar2")
         }

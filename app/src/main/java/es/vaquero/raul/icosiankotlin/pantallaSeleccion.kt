@@ -23,11 +23,11 @@ class pantallaSeleccion : AppCompatActivity() {
 
 
         binding2.btnCrear.setOnClickListener(){
-            cambiaJefe()
+            cambiaMapa()
         }
 
         binding2.btnCargar.setOnClickListener(){
-            cambiaMapa()
+            cambiaCarga()
         }
     }
 
@@ -38,7 +38,7 @@ class pantallaSeleccion : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun cambiaJefe(){
+    fun cambiaCarga(){
         val intent = Intent(this, JefeActivity::class.java)
         startActivity(intent)
     }

@@ -18,7 +18,7 @@
         tools:context=".MainActivity"></fragment>
 
     <Button
-        android:id="@+id/btnTo"
+        android:id="@+id/btnOrigen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -32,11 +32,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_from"
-        app:layout_constraintStart_toStartOf="@+id/btnTo"
-        app:layout_constraintTop_toBottomOf="@+id/btnTo" />
+        app:layout_constraintStart_toStartOf="@+id/btnOrigen"
+        app:layout_constraintTop_toBottomOf="@+id/btnOrigen" />
 
     <Button
-        android:id="@+id/btnForm"
+        android:id="@+id/btnFinal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="252dp"
@@ -50,7 +50,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_to"
-        app:layout_constraintStart_toStartOf="@+id/btnForm"
-        app:layout_constraintTop_toBottomOf="@+id/btnForm" />
+        app:layout_constraintStart_toStartOf="@+id/btnFinal"
+        app:layout_constraintTop_toBottomOf="@+id/btnFinal" />
+
+    <Button
+        android:id="@+id/btnWaypoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="22dp"
+        tools:layout_editor_absoluteY="179dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
