@@ -42,6 +42,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private const val REQUEST_CODE_AUTOCOMPLETE_FROM = 1
         private const val REQUEST_CODE_AUTOCOMPLETE_TO = 2
+        private const val REQUEST_CODE_AUTOCOMPLETE_WAY = 3
         private const val TAG = "MainActivity"
         lateinit var place: Place
         private lateinit var mFromLatLng: com.google.type.LatLng
@@ -77,40 +78,18 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
-            mapFragment.getMapAsync {
-                map = it
-                val orLatLon = mLatLng
-                map.addMarker(MarkerOptions()
-                    .position(orLatLon)
-                    .title("Origen")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(orLatLon, 15f))
-            }
+            Log.v("Tags", "Visualizar")
         }
         binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
-            val fiLatlon = mLatLng
-            map.addMarker(MarkerOptions()
-                .position(fiLatlon)
-                .title("Final")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(fiLatlon, 15f))
+            Log.v("Tags", "Visualizar2")
         }
 
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        googleMap.clear()
-        /*
         val cole = LatLng(41.49109224245079, 2.0396451346114075)
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(cole)
-                .title("Almacen principal")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-        )
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cole, 15f))
-        */
     }
 
     private fun startAutoCompleteForm(requestCode: Int) {
@@ -136,7 +115,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         Log.i(TAG, "Place Name & Id: ${place.name}, ${place.id}")
                         Log.i(TAG, "Place Id: ${place.id}")
                         Log.i(TAG, "Place LatLng: ${place.latLng}")
-                        // place.latLng.also { mFromLatLng = it }
 
                         binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
                         corde = place.latLng.latitude
@@ -150,24 +128,19 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
 
+
                         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
 
                         mapFragment.getMapAsync{
                             map = it
                             val destinationLocation = LatLng(corde, corde2)
-                            map.addMarker(MarkerOptions().position(destinationLocation))
+                            map.addMarker(MarkerOptions().position(destinationLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
 
-                        //db.child("Puntos").child(nombre).push().setValue(hashMap)
                         db.collection("Puntos").document(nombre).set(hashMap)
-                        /*FirebaseDatabase.getInstance("https://database-b98c9-default-rtdb.firebaseio.com").reference.child("Ciudades")
-                            .child(nombre).push().setValue(hashMap);*/
 
-                        place.latLng?.let {
-                            //mFromLatLng = it
-                        }
-                        //drawRoute(onActivityResult.steps)
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,
@@ -180,6 +153,10 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             return
+        }else if (requestCode == REQUEST_CODE_AUTOCOMPLETE_TO){
+
+        }else if(requestCode == REQUEST_CODE_AUTOCOMPLETE_WAY){
+
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
