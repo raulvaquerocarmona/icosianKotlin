@@ -53,6 +53,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         lateinit var geoPoint: GeoPoint
         lateinit var location: com.google.type.LatLng
         private lateinit var mMap: GoogleMap
+        var mLatLng: LatLng = LatLng(2.88,2.77)
+
     }
 
     lateinit var binding4: ActivityMapaBinding
@@ -68,18 +70,30 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         if (!Places.isInitialized()) {
-            Places.initialize(
-                getApplicationContext(),"AIzaSyDN_mUEzByNKUA9gcRgFrLDnv3qQNZutyE"
-            );
+            Places.initialize(getApplicationContext(),
+                getString(R.string.android_sdk_places_api_key),
+                Locale.US);
         }
 
         binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
-            Log.v("Tags", "Visualizar")
+            mapFragment.getMapAsync {
+                map = it
+                val orLatLon = mLatLng
+                map.addMarker(MarkerOptions()
+                    .position(orLatLon)
+                    .title("Origen")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+            }
         }
         binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
-            Log.v("Tags", "Visualizar2")
+            val fiLatlon = mLatLng
+            map.addMarker(MarkerOptions()
+                .position(fiLatlon)
+                .title("Final")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+
         }
 
     }
@@ -125,6 +139,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
+                        mLatLng = LatLng(corde, corde2)
 
                         Log.i(TAG, "LatLngitud:" + corde)
                         Log.i(TAG, "LatLngitud:" + corde2)
@@ -136,8 +151,9 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         mapFragment.getMapAsync(this)
 
                         mapFragment.getMapAsync{
+                            map = it
                             val destinationLocation = LatLng(corde, corde2)
-                            mMap.addMarker(MarkerOptions().position(destinationLocation))
+                            map.addMarker(MarkerOptions().position(destinationLocation))
                         }
 
                         //db.child("Puntos").child(nombre).push().setValue(hashMap)
