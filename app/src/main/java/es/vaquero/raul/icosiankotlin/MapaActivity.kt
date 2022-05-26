@@ -4,14 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,10 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import okhttp3.OkHttpClient
 import org.json.JSONObject
-import es.vaquero.raul.icosiankotlin.databinding.ActivityGenerarMarcadoresBinding
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMapaBinding
-import org.json.JSONArray
+import okhttp3.Request
+import org.json.JSONTokener
 import java.util.*
 
 
@@ -54,9 +51,9 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         lateinit var geoPoint: GeoPoint
         lateinit var location: com.google.type.LatLng
         private lateinit var mMap: GoogleMap
-        var mLatLng: LatLng = LatLng(2.88,2.77)
         var ruta: Int = 1
         var extraPoints: Int = 2
+        var numWaypoint: Int = 1
 
     }
 
@@ -101,10 +98,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding4.btnCrearRuta.setOnClickListener {
+            val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+            Log.v("Tags", puntOrigen.toString())
             binding4.btnOrigen.isEnabled = true
             binding4.btnFinal.isEnabled = true
             binding4.btnWaypoints.isEnabled = true
             extraPoints = 2
+            numWaypoint = 1
             ruta++
         }
 
@@ -140,7 +140,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
-                        mLatLng = LatLng(corde, corde2)
+
 
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
@@ -153,6 +153,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         mapFragment.getMapAsync{
                             map = it
                             val destinationLocation = LatLng(corde, corde2)
+                            map.clear()
                             map.addMarker(MarkerOptions()
                                 .position(destinationLocation)
                                 .title("Origen")
@@ -161,6 +162,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
 
                         db.collection("Ruta"+ruta).document("origen").set(hashMap)
+
 
                     }
                 }
@@ -184,7 +186,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
-                        mLatLng = LatLng(corde, corde2)
 
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
@@ -227,7 +228,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
-                        mLatLng = LatLng(corde, corde2)
 
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
@@ -247,8 +247,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
 
-                        db.collection("Ruta"+ruta).document("waypoint").set(hashMap)
-
+                        db.collection("Ruta"+ruta).document("waypoint"+ numWaypoint).set(hashMap)
+                        numWaypoint++
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,
@@ -262,6 +262,87 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
+
+
+    private fun getDirectionURL() : String{
+        val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+        return "https://maps.googleapis.com/maps/api/directions/json?" +
+                "&origin="+
+                "&destination="+
+                "&waypoints=optimize:true" +
+                "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private inner class GetDirection1(val url: String) : AsyncTask<Void, Void, List<List<LatLng>>>() {
+        override fun doInBackground(vararg p0: Void?): List<List<LatLng>> {
+            val client = OkHttpClient()
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+            val data = response.body!!.string()
+
+            val result =  ArrayList<List<LatLng>>()
+
+            val jsonObject = JSONTokener(data).nextValue() as JSONObject
+            val jsonArray = jsonObject.getJSONArray("routes")
+            val path =  ArrayList<LatLng>()
+
+            for (i in 0 until jsonArray.length()){
+                val polyline = jsonArray.getJSONObject(i).getJSONObject("overview_polyline")
+                val ruta = polyline.getString("points")
+                path.addAll(decodePolyline(ruta))
+            }
+            result.add(path)
+
+            return result
+        }
+
+        override fun onPostExecute(result: List<List<LatLng>>) {
+            val lineoption = PolylineOptions()
+            for (i in result.indices){
+                lineoption.addAll(result[i])
+                lineoption.width(10f)
+                lineoption.color(Color.GREEN)
+                lineoption.geodesic(true)
+            }
+            mMap.addPolyline(lineoption)
+        }
+    }
+
+    fun decodePolyline(encoded: String): List<LatLng> {
+        val poly = ArrayList<LatLng>()
+        var index = 0
+        val len = encoded.length
+        var lat = 0
+        var lng = 0
+        while (index < len) {
+            var b: Int
+            var shift = 0
+            var result = 0
+            do {
+                b = encoded[index++].code - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lat += dlat
+            shift = 0
+            result = 0
+            do {
+                b = encoded[index++].code - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lng += dlng
+            val latLng = LatLng((lat.toDouble() / 1E5),(lng.toDouble() / 1E5))
+            poly.add(latLng)
+        }
+        return poly
     }
 }
 
