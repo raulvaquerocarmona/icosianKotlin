@@ -84,6 +84,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     .position(orLatLon)
                     .title("Origen")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(orLatLon, 15f))
             }
         }
         binding4.btnFinal.setOnClickListener {
@@ -93,12 +94,14 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(fiLatlon)
                 .title("Final")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(fiLatlon, 15f))
         }
 
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        googleMap.clear()
+        /*
         val cole = LatLng(41.49109224245079, 2.0396451346114075)
         googleMap.addMarker(
             MarkerOptions()
@@ -107,7 +110,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         )
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cole, 15f))
-
+        */
     }
 
     private fun startAutoCompleteForm(requestCode: Int) {
