@@ -22,11 +22,11 @@ class pantallaSeleccion : AppCompatActivity() {
         setContentView(binding2.root)
 
 
-        binding2.buttonJefe.setOnClickListener(){
+        binding2.btnCrear.setOnClickListener(){
             cambiaJefe()
         }
 
-        binding2.buttonEmp.setOnClickListener(){
+        binding2.btnCargar.setOnClickListener(){
             cambiaMapa()
         }
     }
