@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">icosianKotlin</string>
-    <string name="android_sdk_places_api_key">AIzaSyDN_mUEzByNKUA9gcRgFrLDnv3qQNZutyE</string>
+    <string name="android_sdk_places_api_key">AIzaSyDj_k85G3fpLNglX1CBtRSPEpWcpK2K3W8</string>
     <string name="btn_change">Modificar</string>
     <string name="btn_ori">Origen</string>
     <string name="btn_dest">Destino</string>
