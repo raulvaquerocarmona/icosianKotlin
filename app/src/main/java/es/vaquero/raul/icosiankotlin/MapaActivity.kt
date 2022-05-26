@@ -55,6 +55,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         lateinit var location: com.google.type.LatLng
         private lateinit var mMap: GoogleMap
         var mLatLng: LatLng = LatLng(2.88,2.77)
+        var ruta: Int = 1
+        var extraPoints: Int = 2
 
     }
 
@@ -76,13 +78,34 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 Locale.US);
         }
 
+
         binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
+            binding4.btnOrigen.isEnabled = false
             Log.v("Tags", "Visualizar")
         }
         binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
+            binding4.btnFinal.isEnabled = false
             Log.v("Tags", "Visualizar2")
+        }
+
+        binding4.btnWaypoints.setOnClickListener {
+            if (extraPoints>0){
+                startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_WAY)
+                extraPoints--
+                if(extraPoints==0){
+                    binding4.btnWaypoints.isEnabled = false
+                }
+            }
+        }
+
+        binding4.btnCrearRuta.setOnClickListener {
+            binding4.btnOrigen.isEnabled = true
+            binding4.btnFinal.isEnabled = true
+            binding4.btnWaypoints.isEnabled = true
+            extraPoints = 2
+            ruta++
         }
 
     }
@@ -112,18 +135,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 Activity.RESULT_OK -> {
                     data?.let {
                         place = Autocomplete.getPlaceFromIntent(data)
-                        Log.i(TAG, "Place Name & Id: ${place.name}, ${place.id}")
-                        Log.i(TAG, "Place Id: ${place.id}")
-                        Log.i(TAG, "Place LatLng: ${place.latLng}")
 
-                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
+                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
                         mLatLng = LatLng(corde, corde2)
 
-                        Log.i(TAG, "LatLngitud:" + corde)
-                        Log.i(TAG, "LatLngitud:" + corde2)
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
@@ -135,11 +153,14 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         mapFragment.getMapAsync{
                             map = it
                             val destinationLocation = LatLng(corde, corde2)
-                            map.addMarker(MarkerOptions().position(destinationLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            map.addMarker(MarkerOptions()
+                                .position(destinationLocation)
+                                .title("Origen")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
 
-                        db.collection("Puntos").document(nombre).set(hashMap)
+                        db.collection("Ruta"+ruta).document("origen").set(hashMap)
 
                     }
                 }
@@ -154,9 +175,91 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             return
         }else if (requestCode == REQUEST_CODE_AUTOCOMPLETE_TO){
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        place = Autocomplete.getPlaceFromIntent(data)
 
+                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
+                        corde = place.latLng.latitude
+                        corde2 = place.latLng.longitude
+                        nombre = place.name
+                        mLatLng = LatLng(corde, corde2)
+
+                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
+                        hashMap.put("Latitud", corde)
+                        hashMap.put("Longitud", corde2)
+
+
+                        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                        mapFragment.getMapAsync(this)
+
+                        mapFragment.getMapAsync{
+                            map = it
+                            val destinationLocation = LatLng(corde, corde2)
+                            map.addMarker(MarkerOptions()
+                                .position(destinationLocation)
+                                .title("Final")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
+                        }
+
+                        db.collection("Ruta"+ruta).document("final").set(hashMap)
+
+                    }
+                }
+                AutocompleteActivity.RESULT_ERROR,
+                -> {
+                    // TODO: Handle the error.
+                    data?.let {
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        status.statusMessage?.let { message -> Log.i(TAG, message) }
+                    }
+                }
+            }
         }else if(requestCode == REQUEST_CODE_AUTOCOMPLETE_WAY){
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        place = Autocomplete.getPlaceFromIntent(data)
 
+                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
+                        corde = place.latLng.latitude
+                        corde2 = place.latLng.longitude
+                        nombre = place.name
+                        mLatLng = LatLng(corde, corde2)
+
+                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
+                        hashMap.put("Latitud", corde)
+                        hashMap.put("Longitud", corde2)
+
+
+                        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                        mapFragment.getMapAsync(this)
+
+                        mapFragment.getMapAsync{
+                            map = it
+                            val destinationLocation = LatLng(corde, corde2)
+                            map.addMarker(MarkerOptions()
+                                .position(destinationLocation)
+                                .title("Final")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)))
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
+                        }
+
+                        db.collection("Ruta"+ruta).document("waypoint").set(hashMap)
+
+                    }
+                }
+                AutocompleteActivity.RESULT_ERROR,
+                -> {
+                    // TODO: Handle the error.
+                    data?.let {
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        status.statusMessage?.let { message -> Log.i(TAG, message) }
+                    }
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
