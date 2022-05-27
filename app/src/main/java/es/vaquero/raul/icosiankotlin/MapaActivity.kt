@@ -26,12 +26,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMapaBinding
+import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 import org.json.JSONTokener
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -53,9 +54,11 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         lateinit var location: com.google.type.LatLng
         private lateinit var mMap: GoogleMap
         var ruta: Int = 1
-        var extraPoints: Int = 2
+        var extraPoints: Int = 3
         var numWaypoint: Int = 1
-
+        lateinit var oriCord: LatLng
+        lateinit var finCord: LatLng
+        var wayMap: HashMap<Int, String> = HashMap()
     }
 
     lateinit var binding4: ActivityMapaBinding
@@ -99,8 +102,9 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding4.btnCrearRuta.setOnClickListener {
-            val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
-            Log.v("Tags", puntOrigen.toString())
+            //val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+            //Log.v("Tags", puntOrigen.toString())
+            getDirectionURL()
             binding4.btnOrigen.isEnabled = true
             binding4.btnFinal.isEnabled = true
             binding4.btnWaypoints.isEnabled = true
@@ -141,6 +145,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
+
+                        oriCord = LatLng(corde, corde2)
 
 
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
@@ -188,6 +194,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde2 = place.latLng.longitude
                         nombre = place.name
 
+                        finCord = LatLng(corde, corde2)
+
                         var hashMap: HashMap<String, Double> = HashMap<String, Double>()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
@@ -234,6 +242,11 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
 
+                        var palMap: String
+                        palMap = corde.toString() + "," + corde2
+
+                        wayMap.put(numWaypoint, palMap)
+
 
                         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
@@ -243,7 +256,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                             val destinationLocation = LatLng(corde, corde2)
                             map.addMarker(MarkerOptions()
                                 .position(destinationLocation)
-                                .title("Final")
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)))
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
@@ -268,26 +280,23 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+
+
     private fun getDirectionURL() : String{
-        /*val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
-        db.collection("Ruta"+ruta).document("waypoint"+ numWaypoint).get().addOnSuccessListener {
-            rout(it.get("Latitud") as String?)
-            route.(it.get("Longitud") as String?)
-        }*/
+        //val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
+        var wayPoints = ""
+        wayMap.forEach { (i, value) ->  wayPoints += "|" + value}
+
+        //Log.v("Tags", wayPoints)
+        println(wayPoints)
+
 
         return "https://maps.googleapis.com/maps/api/directions/json?" +
-                "&origin="+
-                "&destination="+
-                "&waypoints=optimize:true" +
+                "&origin=" + oriCord.latitude + "," + oriCord.longitude +
+                "&destination="+ finCord.latitude + "," + finCord.longitude +
+                "&waypoints=optimize:true" + wayPoints
                 "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
     }
-
-   /* private fun rout(s: String?) {
-
-    }
-    private fun rout2(s: String?) {
-
-    }*/
 
 
     @SuppressLint("StaticFieldLeak")
@@ -326,6 +335,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addPolyline(lineoption)
         }
     }
+
     fun decodePolyline(encoded: String): List<LatLng> {
         val poly = ArrayList<LatLng>()
         var index = 0
