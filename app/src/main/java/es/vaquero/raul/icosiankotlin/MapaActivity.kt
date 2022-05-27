@@ -43,16 +43,11 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val REQUEST_CODE_AUTOCOMPLETE_WAY = 3
         private const val TAG = "MainActivity"
         lateinit var place: Place
-        private lateinit var mFromLatLng: com.google.type.LatLng
         private var corde: Double = 0.0
         private var corde2: Double = 0.0
         private var nombre: String = ""
-        private var route: String = ""
         private val db = FirebaseFirestore.getInstance()
         private val bdd = FirebaseDatabase.getInstance().getReference()
-        lateinit var geoPoint: GeoPoint
-        lateinit var location: com.google.type.LatLng
-        private lateinit var mMap: GoogleMap
         var ruta: Int = 1
         var extraPoints: Int = 3
         var numWaypoint: Int = 1
@@ -102,9 +97,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding4.btnCrearRuta.setOnClickListener {
-            //val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
-            //Log.v("Tags", puntOrigen.toString())
-            getDirectionURL()
+            mapFragment.getMapAsync {
+                map = it
+                var urlMapa = getDirectionURL()
+                println(urlMapa)
+                GetDirection1(urlMapa).execute()
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(oriCord, 14F))
+            }
             binding4.btnOrigen.isEnabled = true
             binding4.btnFinal.isEnabled = true
             binding4.btnWaypoints.isEnabled = true
@@ -283,18 +282,20 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun getDirectionURL() : String{
-        //val puntOrigen = db.collection("Ruta"+ruta).document("origen").get()
         var wayPoints = ""
         wayMap.forEach { (i, value) ->  wayPoints += "|" + value}
+        /*println("https://maps.googleapis.com/maps/api/directions/json?" +
+        "&origin=" + oriCord.latitude + "," + oriCord.longitude +
+                "&destination="+ finCord.latitude + "," + finCord.longitude +
+                "&waypoints=optimize:true" + wayPoints +
+        "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA")
 
-        //Log.v("Tags", wayPoints)
-        println(wayPoints)
-
+         */
 
         return "https://maps.googleapis.com/maps/api/directions/json?" +
                 "&origin=" + oriCord.latitude + "," + oriCord.longitude +
                 "&destination="+ finCord.latitude + "," + finCord.longitude +
-                "&waypoints=optimize:true" + wayPoints
+                "&waypoints=optimize:true" + wayPoints +
                 "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
     }
 
@@ -307,6 +308,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             val response = client.newCall(request).execute()
             val data = response.body!!.string()
 
+            println(data)
+
             val result =  ArrayList<List<LatLng>>()
 
             val jsonObject = JSONTokener(data).nextValue() as JSONObject
@@ -317,8 +320,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 val polyline = jsonArray.getJSONObject(i).getJSONObject("overview_polyline")
                 val ruta = polyline.getString("points")
                 path.addAll(decodePolyline(ruta))
-                db.collection("Rutas completas"+ Companion.ruta).document("Json").set(ruta)
             }
+            //db.collection("Ruta"+ruta).document("Codigo ruta").set(ruta)
             result.add(path)
 
             return result
@@ -332,7 +335,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 lineoption.color(Color.GREEN)
                 lineoption.geodesic(true)
             }
-            mMap.addPolyline(lineoption)
+            map.addPolyline(lineoption)
         }
     }
 
