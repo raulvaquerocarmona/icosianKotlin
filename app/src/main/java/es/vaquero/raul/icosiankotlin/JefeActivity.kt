@@ -16,6 +16,17 @@ class JefeActivity : AppCompatActivity() {
             //cambiaJefe()
         }
     }
+
+    /*fun alertaAdmin(uid) {
+        var uid = firebase.auth().currentUser.uid
+        console.log("function alertaAdmin activada")
+        if (uid == "P4vQc3iYeJZqJzVUC2qfsQzkc9") {
+            console.log("El usuario es administrador")
+            funcionesExclusivasAdministrador()
+        } else {
+            console.log("El usuario es usuario común")
+        }
+    }*/
 /*
 fun cambiaJefe(){
     val intent = Intent(this, Generar_marcadores::class.java)

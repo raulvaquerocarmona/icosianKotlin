@@ -1,18 +1,23 @@
+
 package es.vaquero.raul.icosiankotlin
+
 
 import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import es.vaquero.raul.icosiankotlin.databinding.ActivitySeleccionBinding
 
 
 lateinit var binding2 : ActivitySeleccionBinding
+private val db = FirebaseFirestore.getInstance()
 class pantallaSeleccion : AppCompatActivity() {
 
 
@@ -20,6 +25,23 @@ class pantallaSeleccion : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding2 = ActivitySeleccionBinding.inflate(layoutInflater)
         setContentView(binding2.root)
+
+        val email :String = binding.editTextTextEmailAddress.getText().toString()
+            db.collection("Datos usuarios").document(email).get().addOnSuccessListener {
+                binding2.textView2.setText(it.get("Nombre") as String?)
+                var num = it.get("Permisos") as Long
+                println("aqui "+num.toInt())
+                if(num.toInt() == 0){
+                    binding2.btnCrear.isEnabled = false
+                    binding2.btnCargar.isEnabled = true
+                }
+                else{
+                    binding2.btnCrear.isEnabled = true
+                    binding2.btnCargar.isEnabled = true
+                }
+          }
+
+
 
 
         binding2.btnCrear.setOnClickListener(){
