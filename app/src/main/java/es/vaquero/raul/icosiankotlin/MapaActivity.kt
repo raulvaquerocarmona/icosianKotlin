@@ -23,7 +23,6 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMapaBinding
@@ -49,11 +48,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         private val db = FirebaseFirestore.getInstance()
         private val bdd = FirebaseDatabase.getInstance().getReference()
         var ruta: Int = 1
-        var extraPoints: Int = 3
+        var extraPoints: Int = 5
         var numWaypoint: Int = 1
-        lateinit var oriCord: LatLng
+        var oriCord: LatLng = LatLng(2.0, 2.0)
         lateinit var finCord: LatLng
-        var wayMap: HashMap<Int, String> = HashMap()
+        var origenMap: HashMap<String, Double> = HashMap()
+        var finalMap: HashMap<String, Double> = HashMap()
+        var wayMap: HashMap<String, String> = HashMap()
     }
 
     lateinit var binding4: ActivityMapaBinding
@@ -62,7 +63,6 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_mapa)
         binding4 = ActivityMapaBinding.inflate(layoutInflater)
         setContentView(binding4.root)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -78,17 +78,16 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         binding4.btnOrigen.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_FROM)
             binding4.btnOrigen.isEnabled = false
-            Log.v("Tags", "Visualizar")
         }
         binding4.btnFinal.setOnClickListener {
             startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_TO)
             binding4.btnFinal.isEnabled = false
-            Log.v("Tags", "Visualizar2")
         }
 
         binding4.btnWaypoints.setOnClickListener {
             if (extraPoints>0){
                 startAutoCompleteForm(REQUEST_CODE_AUTOCOMPLETE_WAY)
+                db.collection("Ruta"+ruta).document("waypoints").set(wayMap)
                 extraPoints--
                 if(extraPoints==0){
                     binding4.btnWaypoints.isEnabled = false
@@ -100,18 +99,16 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             mapFragment.getMapAsync {
                 map = it
                 var urlMapa = getDirectionURL()
-                println(urlMapa)
                 GetDirection1(urlMapa).execute()
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(oriCord, 14F))
+                extraPoints = 5
+                ruta++
             }
             binding4.btnOrigen.isEnabled = true
             binding4.btnFinal.isEnabled = true
             binding4.btnWaypoints.isEnabled = true
-            extraPoints = 2
-            numWaypoint = 1
-            ruta++
-        }
 
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -126,9 +123,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         val intent =
             Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
 
-        Log.v("Tags", "Inicio")
         startActivityForResult(intent, requestCode)
-        Log.v("Tags", "FINAL")
     }
 
 
@@ -147,11 +142,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         oriCord = LatLng(corde, corde2)
 
-
-                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
+                        /*
+                        var hashMap: HashMap<String, Double> = HashMap()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
-
+                         */
+                        origenMap.put("Latitud", corde)
+                        origenMap.put("Longitud", corde2)
 
                         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
@@ -166,15 +163,11 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
-
-                        db.collection("Ruta"+ruta).document("origen").set(hashMap)
-
-
+                        db.collection("Ruta"+ruta).document("origen").set(origenMap)
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,
                 -> {
-                    // TODO: Handle the error.
                     data?.let {
                         val status = Autocomplete.getStatusFromIntent(data)
                         status.statusMessage?.let { message -> Log.i(TAG, message) }
@@ -195,10 +188,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         finCord = LatLng(corde, corde2)
 
-                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
+                        /*
+                        var hashMap: HashMap<String, Double> = HashMap()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
-
+                         */
+                        finalMap.put("Latitud", corde)
+                        finalMap.put("Longitud", corde2)
 
                         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
@@ -212,14 +208,11 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
-
-                        db.collection("Ruta"+ruta).document("final").set(hashMap)
-
+                        db.collection("Ruta"+ruta).document("final").set(finalMap)
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,
                 -> {
-                    // TODO: Handle the error.
                     data?.let {
                         val status = Autocomplete.getStatusFromIntent(data)
                         status.statusMessage?.let { message -> Log.i(TAG, message) }
@@ -237,15 +230,18 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         corde2 = place.latLng.longitude
                         nombre = place.name
 
-                        var hashMap: HashMap<String, Double> = HashMap<String, Double>()
+                        /*
+                        var hashMap: HashMap<String, Double> = HashMap()
                         hashMap.put("Latitud", corde)
                         hashMap.put("Longitud", corde2)
 
-                        var palMap: String
+                         */
+
+                        var palMap = ""
                         palMap = corde.toString() + "," + corde2
 
-                        wayMap.put(numWaypoint, palMap)
-
+                        wayMap.put("Marker"+ numWaypoint, palMap)
+                        numWaypoint++
 
                         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
@@ -258,14 +254,10 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)))
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 15f))
                         }
-
-                        db.collection("Ruta"+ruta).document("waypoint"+ numWaypoint).set(hashMap)
-                        numWaypoint++
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR,
                 -> {
-                    // TODO: Handle the error.
                     data?.let {
                         val status = Autocomplete.getStatusFromIntent(data)
                         status.statusMessage?.let { message -> Log.i(TAG, message) }
@@ -277,26 +269,40 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-
-
-
-
     private fun getDirectionURL() : String{
         var wayPoints = ""
         wayMap.forEach { (i, value) ->  wayPoints += "|" + value}
-        /*println("https://maps.googleapis.com/maps/api/directions/json?" +
-        "&origin=" + oriCord.latitude + "," + oriCord.longitude +
-                "&destination="+ finCord.latitude + "," + finCord.longitude +
-                "&waypoints=optimize:true" + wayPoints +
-        "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA")
+        db.collection("Ruta"+ruta).document("origen").get().addOnSuccessListener {
+             var origenLatitud = it.get("Latitud") as Double
+             var origenLongitud = it.get("Longitud") as Double
+        }
+        db.collection("Ruta"+ruta).document("final").get().addOnSuccessListener {
+             var finalLatitud = it.get("Latitud") as Double
+             var finalLongitud = it.get("Longitud") as Double
+        }
 
+        /*
+        for (i in 1..numWaypoint){
+            db.collection("Ruta"+ruta).document("waypoints").get().addOnSuccessListener {
+                wayPoints += "|" + it.get("Marker"+i) as String
+                println("Punticos = " + wayPoints)
+            }
+        }
          */
+        numWaypoint = 1
 
-        return "https://maps.googleapis.com/maps/api/directions/json?" +
-                "&origin=" + oriCord.latitude + "," + oriCord.longitude +
-                "&destination="+ finCord.latitude + "," + finCord.longitude +
-                "&waypoints=optimize:true" + wayPoints +
-                "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
+            if(extraPoints == 5){
+                return "https://maps.googleapis.com/maps/api/directions/json?" +
+                        "&origin=" + oriCord.latitude + "," + oriCord.longitude +
+                        "&destination="+ finCord.latitude + "," + finCord.longitude +
+                        "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
+            }else{
+                return "https://maps.googleapis.com/maps/api/directions/json?" +
+                        "&origin=" + oriCord.latitude + "," + oriCord.longitude +
+                        "&destination="+ finCord.latitude + "," + finCord.longitude +
+                        "&waypoints=optimize:true" + wayPoints +
+                        "&key=AIzaSyCafMUo4i93krYGQ3iaV0qOk3GuxyMjUrA"
+            }
     }
 
 
@@ -308,20 +314,23 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             val response = client.newCall(request).execute()
             val data = response.body!!.string()
 
-            println(data)
-
             val result =  ArrayList<List<LatLng>>()
 
             val jsonObject = JSONTokener(data).nextValue() as JSONObject
             val jsonArray = jsonObject.getJSONArray("routes")
             val path =  ArrayList<LatLng>()
-
-            for (i in 0 until jsonArray.length()){
+            var rutaP = ""
+            for (i in 0 until jsonArray.length()) {
                 val polyline = jsonArray.getJSONObject(i).getJSONObject("overview_polyline")
-                val ruta = polyline.getString("points")
-                path.addAll(decodePolyline(ruta))
+                rutaP = polyline.getString("points")
+                path.addAll(decodePolyline(rutaP))
             }
-            //db.collection("Ruta"+ruta).document("Codigo ruta").set(ruta)
+
+            var hashMap: HashMap<String, String> = HashMap()
+            hashMap.put("Ruta", (ruta-1).toString())
+            hashMap.put("codigoRuta", rutaP)
+
+            db.collection("Rutas").document().set(hashMap)
             result.add(path)
 
             return result

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_carga_mapa.xml" value="0.176" />
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_generar_marcadores.xml" value="0.25416666666666665" />
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_jefe.xml" value="0.23143115942028986" />
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_main.xml" value="0.19429347826086957" />
@@ -10,6 +11,7 @@
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_mapa2.xml" value="0.11302083333333333" />
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_pantalla_admin.xml" value="0.25416666666666665" />
         <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/activity_seleccion.xml" value="0.2" />
+        <entry key="..\:/DAMEstatut/PROJECTO/icosianKotlin/app/src/main/res/layout/list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.337" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/drawable/btn_bg.xml" value="0.337" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/drawable/btn_eliminarcta.xml" value="0.337" />
@@ -27,7 +29,6 @@
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/layout/activity_main.xml" value="0.34103260869565216" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/layout/activity_mapa.xml" value="0.33" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/layout/activity_pantalla_admin.xml" value="0.33" />
-        <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/layout/activity_resgistro.xml" value="0.33" />
         <entry key="..\:/Users/Raul/Desktop/icosianKotlin/app/src/main/res/layout/activity_seleccion.xml" value="0.346875" />
       </map>
     </option>
