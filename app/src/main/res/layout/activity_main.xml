@@ -12,7 +12,7 @@
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="ICOSIAN ROUTES"
         android:textColor="@color/colorWhite"
         android:textSize="36sp"
         android:textStyle="bold"
@@ -90,24 +90,6 @@
         app:layout_constraintEnd_toEndOf="@+id/button2"
         app:layout_constraintStart_toStartOf="@+id/button2"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
-
-    <Button
-        android:id="@+id/btnGoogle"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_bg"
-        android:drawablePadding="10dp"
-        android:paddingLeft="20dp"
-        android:text="Google"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        app:drawableLeftCompat="@drawable/ic_google"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.562"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        app:layout_constraintVertical_bias="0.089" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

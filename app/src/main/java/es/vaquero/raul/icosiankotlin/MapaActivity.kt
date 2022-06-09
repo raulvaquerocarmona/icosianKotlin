@@ -135,7 +135,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     data?.let {
                         place = Autocomplete.getPlaceFromIntent(data)
 
-                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
+                        //binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
@@ -181,7 +181,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     data?.let {
                         place = Autocomplete.getPlaceFromIntent(data)
 
-                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
+                        //binding4.tvFrom.text = getString(R.string.label_from, place.latLng.toString())
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name
@@ -225,7 +225,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     data?.let {
                         place = Autocomplete.getPlaceFromIntent(data)
 
-                        binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
+                       // binding4.tvFrom.text = getString(R.string.label_from, place.latLng)
                         corde = place.latLng.latitude
                         corde2 = place.latLng.longitude
                         nombre = place.name

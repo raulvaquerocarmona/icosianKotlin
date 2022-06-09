@@ -8,11 +8,9 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import es.vaquero.raul.icosiankotlin.databinding.ActivityMainBinding
-import es.vaquero.raul.icosiankotlin.databinding.ActivityResgistroBinding
 
 
 private val db = FirebaseFirestore.getInstance()
